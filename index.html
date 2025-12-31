@@ -39,13 +39,13 @@
         
         /* 百分位數顯示 */
         .percentile-badge { display: inline-block; padding: 4px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; margin-left: 5px; }
-        .percentile-p3 { background: #ff6b6b; color: white; }
-        .percentile-p10 { background: #ffa500; color: white; }
-        .percentile-p25 { background: #ffd700; color: #333; }
-        .percentile-p50 { background: #90ee90; color: #333; }
-        .percentile-p75 { background: #87ceeb; color: #333; }
-        .percentile-p90 { background: #9370db; color: white; }
-        .percentile-p97 { background: #ba55d3; color: white; }
+        .percentile-pr3 { background: #ff6b6b; color: white; }
+        .percentile-pr10 { background: #ffa500; color: white; }
+        .percentile-pr25 { background: #ffd700; color: #333; }
+        .percentile-pr50 { background: #90ee90; color: #333; }
+        .percentile-pr75 { background: #87ceeb; color: #333; }
+        .percentile-pr90 { background: #9370db; color: white; }
+        .percentile-pr97 { background: #ba55d3; color: white; }
         
         /* 表格區 */
         .history-section { margin-top: 30px; overflow-x: auto; }
@@ -211,30 +211,33 @@
         const monthIndex = Math.round(months);
         if (monthIndex >= data.months.length) return null;
         
-        const percentiles = ['P3', 'P10', 'P25', 'P50', 'P75', 'P90', 'P97'];
+        // 數據鍵名是 P3, P10 等，但顯示標籤是 PR3, PR10 等
+        const dataKeys = ['P3', 'P10', 'P25', 'P50', 'P75', 'P90', 'P97'];
+        const displayLabels = ['PR3', 'PR10', 'PR25', 'PR50', 'PR75', 'PR90', 'PR97'];
         let percentile = null;
         
-        for (let i = 0; i < percentiles.length; i++) {
-            const p = percentiles[i];
-            if (data[p] && data[p][monthIndex] !== undefined && !isNaN(data[p][monthIndex])) {
-                if (value <= data[p][monthIndex]) {
-                    percentile = p;
+        for (let i = 0; i < dataKeys.length; i++) {
+            const dataKey = dataKeys[i];
+            const displayLabel = displayLabels[i];
+            if (data[dataKey] && data[dataKey][monthIndex] !== undefined && !isNaN(data[dataKey][monthIndex])) {
+                if (value <= data[dataKey][monthIndex]) {
+                    percentile = displayLabel;
                     break;
                 }
             }
         }
         
-        // 如果超過 P97，返回 '>P97'
+        // 如果超過 PR97，返回 '>PR97'
         if (!percentile && data.P97 && data.P97[monthIndex] !== undefined) {
-            if (value > data.P97[monthIndex]) return '>P97';
+            if (value > data.P97[monthIndex]) return '>PR97';
         }
         
-        // 如果低於 P3，返回 '<P3'
+        // 如果低於 PR3，返回 '<PR3'
         if (!percentile && data.P3 && data.P3[monthIndex] !== undefined) {
-            if (value < data.P3[monthIndex]) return '<P3';
+            if (value < data.P3[monthIndex]) return '<PR3';
         }
         
-        return percentile || 'P50';
+        return percentile || 'PR50';
     }
 
     // 更新百分位數顯示
@@ -493,11 +496,16 @@
                     width = 1.5;
                 }
 
+                // 將顯示名稱從 P 改成 PR
+                const displayName = key.startsWith('P') && key.length > 1 && !isNaN(key.substring(1)) 
+                    ? 'PR' + key.substring(1) 
+                    : key;
+
                 traces.push({
                     x: data['months'],
                     y: data[key],
                     mode: 'lines',
-                    name: key,
+                    name: displayName,
                     line: { color: color, width: width },
                     hoverinfo: 'name+x+y'
                 });
