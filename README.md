@@ -49,12 +49,46 @@ php -S localhost:8000
 2. 確保 `index.html` 在網站根目錄
 3. 透過網址訪問您的網站
 
-### 方法 4：使用 GitHub Pages
+### 方法 4：使用 GitHub Pages + GitHub Actions（推薦）
 
-1. 將專案推送到 GitHub 儲存庫
-2. 在儲存庫設定中啟用 GitHub Pages
-3. 選擇主分支作為來源
-4. 您的網站將在 `https://您的使用者名稱.github.io/儲存庫名稱` 上線
+本專案已配置 GitHub Actions 自動部署工作流程。
+
+#### 設定步驟：
+
+1. **在 GitHub 建立新儲存庫**
+   - 登入 GitHub
+   - 點擊右上角的 "+" → "New repository"
+   - 輸入儲存庫名稱（例如：`growthup`）
+   - 選擇 Public（GitHub Pages 免費版需要公開儲存庫）
+   - 不要勾選 "Initialize this repository with a README"（因為我們已經有檔案了）
+
+2. **將專案推送到 GitHub**
+   ```bash
+   # 在專案目錄下執行
+   git init
+   git add .
+   git commit -m "Initial commit: Growth curve tracking app"
+   git branch -M main
+   git remote add origin https://github.com/您的使用者名稱/儲存庫名稱.git
+   git push -u origin main
+   ```
+
+3. **啟用 GitHub Pages**
+   - 進入儲存庫的 Settings（設定）
+   - 點擊左側的 "Pages"
+   - 在 "Source" 選擇 "GitHub Actions"
+   - 儲存設定
+
+4. **自動部署**
+   - 當您推送程式碼到 `main` 或 `master` 分支時，GitHub Actions 會自動部署
+   - 部署完成後，您的網站將在 `https://您的使用者名稱.github.io/儲存庫名稱` 上線
+   - 您也可以在 Actions 標籤頁查看部署狀態
+
+#### 手動觸發部署
+如果需要手動觸發部署，可以：
+- 進入儲存庫的 Actions 標籤頁
+- 選擇 "Deploy to GitHub Pages" 工作流程
+- 點擊 "Run workflow" 按鈕
 
 ### 方法 5：使用 Netlify
 
